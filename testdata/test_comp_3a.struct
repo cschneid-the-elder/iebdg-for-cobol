@@ -1,0 +1,4 @@
+       01  struct.
+           05  a pic s999 comp-3.
+           05  b pic s999 usage comp-3.
+

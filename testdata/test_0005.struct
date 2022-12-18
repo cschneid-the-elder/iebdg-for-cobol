@@ -1,0 +1,5 @@
+       01  struct.                                                      00000001
+           05  a pic 9.                                                 00000002
+           05  b pic 9 comp-3.                                          00000003
+           05  c pic x usage display.                                   00000004
+           

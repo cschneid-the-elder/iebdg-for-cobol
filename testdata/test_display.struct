@@ -1,0 +1,4 @@
+       01  struct.
+           05  a pic 9 display.
+           05  b pic 9 usage display.
+
