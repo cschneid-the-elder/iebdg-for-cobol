@@ -1,0 +1,8 @@
+       01  struct.
+           05  a pic x(010) utf-8.
+           05  b pic x(010) usage utf-8.
+           05  c pic x(010) usage is utf-8.
+           05  d pic x(010) utf-8 native.
+           05  e pic x(010) usage utf-8 native.
+           05  f pic x(010) usage is utf-8 native.
+

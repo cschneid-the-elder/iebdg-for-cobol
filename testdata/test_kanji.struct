@@ -1,0 +1,8 @@
+       01  struct.
+           05  a pic x kanji.
+           05  b pic x usage kanji.
+           05  c pic x usage is kanji.
+           05  d pic x kanji native.
+           05  e pic x usage kanji native.
+           05  f pic x usage is kanji native.
+

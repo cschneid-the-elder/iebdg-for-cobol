@@ -229,7 +229,7 @@ dataUsageType
    | COMPUTATIONAL_3 
    | COMPUTATIONAL_4 
    | COMPUTATIONAL_5 
-   | CONTROL_POINT 
+   | CONTROL_POINT // obsolete as of COBOL-85
    | DATE 
    | DISPLAY 
    | DISPLAY_1 

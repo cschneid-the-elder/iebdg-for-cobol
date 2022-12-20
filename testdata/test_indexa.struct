@@ -1,0 +1,5 @@
+       01  struct.
+           05  a          index.
+           05  b          usage index.
+           05  c          usage is index.
+

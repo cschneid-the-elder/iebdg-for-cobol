@@ -1,0 +1,8 @@
+       01  struct.
+           05  a pic n national.
+           05  b pic n usage national.
+           05  c pic n usage is national.
+           05  d pic n national native.
+           05  e pic n usage national native.
+           05  f pic n usage is national native.
+
