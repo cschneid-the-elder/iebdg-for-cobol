@@ -1,4 +1,8 @@
        01  struct.
            05  a pic 9 display.
            05  b pic 9 usage display.
+           05  c pic 9 usage is display.
+           05  d pic 9 display native.
+           05  e pic 9 usage display native.
+           05  f pic 9 usage is display native.
 

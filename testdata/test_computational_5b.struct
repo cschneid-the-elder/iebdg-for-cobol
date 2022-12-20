@@ -1,0 +1,6 @@
+       01  struct computational-5.
+           05  a pic s999 computational-5.
+           05  b pic s999 usage computational-5.
+           05  c pic s999 usage is computational-5.
+           05  d pic s999.
+

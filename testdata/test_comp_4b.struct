@@ -1,0 +1,6 @@
+       01  struct comp-4.
+           05  a pic s999 comp-4.
+           05  b pic s999 usage comp-4.
+           05  c pic s999 usage is comp-4.
+           05  d pic s999.
+

@@ -1,0 +1,14 @@
+       01  struct.
+           05  a pic s9999 binary-char signed.
+           05  b pic s9999 usage binary-char signed.
+           05  c pic s9999 usage is binary-char signed.
+           05  d pic s9999 binary-char signed native.
+           05  e pic s9999 usage binary-char signed native.
+           05  f pic s9999 usage is binary-char signed native.
+           05  g pic  9999 binary-char unsigned.
+           05  h pic  9999 usage binary-char unsigned.
+           05  i pic  9999 usage is binary-char unsigned.
+           05  j pic  9999 binary-char unsigned native.
+           05  k pic  9999 usage binary-char unsigned native.
+           05  l pic  9999 usage is binary-char unsigned native.
+

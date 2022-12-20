@@ -1,0 +1,8 @@
+       01  struct.
+           05  a pic s9999 binary.
+           05  b pic s9999 usage binary.
+           05  c pic s9999 usage is binary.
+           05  d pic s9999 binary native.
+           05  e pic s9999 usage binary native.
+           05  f pic s9999 usage is binary native.
+

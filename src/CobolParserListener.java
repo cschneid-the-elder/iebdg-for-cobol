@@ -457,6 +457,16 @@ public interface CobolParserListener extends ParseTreeListener {
 	 */
 	void exitDataUsageType(CobolParser.DataUsageTypeContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link CobolParser#dataUsageTypeSignPhrase}.
+	 * @param ctx the parse tree
+	 */
+	void enterDataUsageTypeSignPhrase(CobolParser.DataUsageTypeSignPhraseContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CobolParser#dataUsageTypeSignPhrase}.
+	 * @param ctx the parse tree
+	 */
+	void exitDataUsageTypeSignPhrase(CobolParser.DataUsageTypeSignPhraseContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link CobolParser#dataUsageObjectReferenceFactoryPhrase}.
 	 * @param ctx the parse tree
 	 */

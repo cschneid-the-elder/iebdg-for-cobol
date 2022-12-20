@@ -1,0 +1,8 @@
+       01  struct.
+           05  a          computational-1.
+           05  b          usage computational-1.
+           05  c          usage is computational-1.
+           05  d          computational-1 native.
+           05  e          usage computational-1 native.
+           05  f          usage is computational-1 native.
+

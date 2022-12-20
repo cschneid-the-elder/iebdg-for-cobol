@@ -1,0 +1,14 @@
+       01  struct.
+           05  a pic s9(009) binary-long signed.
+           05  b pic s9(009) usage binary-long signed.
+           05  c pic s9(009) usage is binary-long signed.
+           05  d pic s9(009) binary-long signed native.
+           05  e pic s9(009) usage binary-long signed native.
+           05  f pic s9(009) usage is binary-long signed native.
+           05  g pic  9(009) binary-long unsigned.
+           05  h pic  9(009) usage binary-long unsigned.
+           05  i pic  9(009) usage is binary-long unsigned.
+           05  j pic  9(009) binary-long unsigned native.
+           05  k pic  9(009) usage binary-long unsigned native.
+           05  l pic  9(009) usage is binary-long unsigned native.
+

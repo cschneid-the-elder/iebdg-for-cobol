@@ -1,0 +1,6 @@
+       01  struct usage comp-2.
+           05  a          comp-2.
+           05  b          usage comp-2.
+           05  c          usage is comp-2.
+           05  d          .
+

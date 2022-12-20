@@ -1,0 +1,3 @@
+       01  struct usage is computational-3.
+           05  a pic s999.
+           05  b pic s999 computational-3.

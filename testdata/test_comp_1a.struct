@@ -1,0 +1,8 @@
+       01  struct.
+           05  a          comp-1.
+           05  b          usage comp-1.
+           05  c          usage is comp-1.
+           05  d          comp-1 native.
+           05  e          usage comp-1 native.
+           05  f          usage is comp-1 native.
+

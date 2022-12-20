@@ -1,0 +1,3 @@
+       01  struct binary.
+           05  a pic s9999 binary.
+           05  b pic s9999.

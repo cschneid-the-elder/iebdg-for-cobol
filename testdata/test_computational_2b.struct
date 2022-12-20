@@ -1,0 +1,6 @@
+       01  struct usage computational-2.
+           05  a          computational-2.
+           05  b          usage computational-2.
+           05  c          usage is computational-2.
+           05  d          .
+

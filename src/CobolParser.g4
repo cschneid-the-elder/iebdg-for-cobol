@@ -212,10 +212,10 @@ dataUsageClause
    
 dataUsageType 
    : (BINARY (TRUNCATED | EXTENDED)? 
-   | (BINARY_CHAR (SIGNED | UNSIGNED))
-   | (BINARY_DOUBLE (SIGNED | UNSIGNED))
-   | (BINARY_LONG (SIGNED | UNSIGNED))
-   | (BINARY_SHORT (SIGNED | UNSIGNED))
+   | (BINARY_CHAR dataUsageTypeSignPhrase)
+   | (BINARY_DOUBLE dataUsageTypeSignPhrase)
+   | (BINARY_LONG dataUsageTypeSignPhrase)
+   | (BINARY_SHORT dataUsageTypeSignPhrase)
    | BIT 
    | COMP 
    | COMP_1 
@@ -261,6 +261,10 @@ dataUsageType
    | OBJECT_REFERENCE dataUsageObjectReferenceFactoryPhrase?) 
    ;
 
+dataUsageTypeSignPhrase
+   : (SIGNED | UNSIGNED)
+   ;
+   
 dataUsageObjectReferenceFactoryPhrase
    : ((FACTORY OF?) (interfaceName | ACTIVE_CLASS | (className ONLY?)))
    ;

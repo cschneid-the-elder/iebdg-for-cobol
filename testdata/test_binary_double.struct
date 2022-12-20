@@ -1,0 +1,14 @@
+       01  struct.
+           05  a pic s9(018) binary-double signed.
+           05  b pic s9(018) usage binary-double signed.
+           05  c pic s9(018) usage is binary-double signed.
+           05  d pic s9(018) binary-double signed native.
+           05  e pic s9(018) usage binary-double signed native.
+           05  f pic s9(018) usage is binary-double signed native.
+           05  g pic  9(018) binary-double unsigned.
+           05  h pic  9(018) usage binary-double unsigned.
+           05  i pic  9(018) usage is binary-double unsigned.
+           05  j pic  9(018) binary-double unsigned native.
+           05  k pic  9(018) usage binary-double unsigned native.
+           05  l pic  9(018) usage is binary-double unsigned native.
+

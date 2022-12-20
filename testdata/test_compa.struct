@@ -1,0 +1,8 @@
+       01  struct.
+           05  a pic s999 comp.
+           05  b pic s999 usage comp.
+           05  c pic s999 usage is comp.
+           05  d pic s999 comp native.
+           05  e pic s999 usage comp native.
+           05  f pic s999 usage is comp native.
+

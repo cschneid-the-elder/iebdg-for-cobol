@@ -280,6 +280,12 @@ public interface CobolParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDataUsageType(CobolParser.DataUsageTypeContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link CobolParser#dataUsageTypeSignPhrase}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDataUsageTypeSignPhrase(CobolParser.DataUsageTypeSignPhraseContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link CobolParser#dataUsageObjectReferenceFactoryPhrase}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

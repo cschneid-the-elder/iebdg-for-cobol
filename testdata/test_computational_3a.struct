@@ -1,0 +1,8 @@
+       01  struct.
+           05  a pic s999 computational-3.
+           05  b pic s999 usage computational-3.
+           05  c pic s999 usage is computational-3.
+           05  d pic s999 computational-3 native.
+           05  e pic s999 usage computational-3 native.
+           05  f pic s999 usage is computational-3 native.
+

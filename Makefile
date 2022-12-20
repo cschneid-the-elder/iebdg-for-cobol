@@ -20,7 +20,7 @@ AOPT = -visitor -listener
 
 all: ./src/CobolLexer.tokens ./src/CobolParser.tokens 
 
-.PHONY: all test jar testrig
+.PHONY: all test jar testrig init
 
 test:
 ifeq ($(strip $(n)),)
@@ -39,7 +39,10 @@ jar:
 
 testrig:
 	echo `date` $@ $(n) >> build.log
-	java -cp ./class:.:./antlr-4.9.2-complete.jar org.antlr.v4.gui.TestRig Cobol startRule -gui -tokens < ./testdata/test-$(n).struct
+	java -cp ./class:.:./antlr-4.9.2-complete.jar org.antlr.v4.gui.TestRig Cobol startRule -gui -tokens < ./testdata/test_$(n).struct
+
+init:
+	mkdir class
 
 ./src/CobolParser.tokens: ./src/CobolLexer.tokens
 
