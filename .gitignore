@@ -1,4 +1,7 @@
 class/*
 src/*.tokens
+src/*.interp
+src/CobolLexer.java
+src/CobolParser*.java
 build.log
 
