@@ -105,6 +105,7 @@ public static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 		walker.walk(listener, tree);
 
 		LOGGER.finest("ddNodes: " + ddNodes);
+		System.out.println(ddNodes);
 
 
 	/*

@@ -17,13 +17,9 @@ class DDNode {
 	private List<String> valuesSet = new ArrayList<>();
 	private Boolean global = false;
 	private Boolean external = false;
-	private Boolean packedDecimal = false;
-	private Boolean binary = false;
-	private Boolean comp5 = false;
-	private Boolean picX = false;
-	private Boolean displayNumeric = false;
+	private DDNodeType type = null;
 	private Boolean numeric = false;
-	private Boolean unsupportedType = false;
+	private Boolean group = false;
 	private CobolParser.DataDescriptionEntryContext ddeCtx = null;
 	private CobolParser.DataDescriptionEntryFormat1Context dde1Ctx = null;
 	private CobolParser.DataDescriptionEntryFormat2Context dde2Ctx = null;
@@ -67,6 +63,7 @@ class DDNode {
 			if (dde1Ctx.dataExternalClause() != null && dde1Ctx.dataExternalClause().size() > 0) {
 				this.external = true;
 			}
+			this.setTypeFromDDE1CTX();
 		}
 	}
 
@@ -174,30 +171,35 @@ class DDNode {
 	private void setTypeFromDDE1CTX() {
 
 		List<CobolParser.DataPictureClauseContext> dpcc = this.dde1Ctx.dataPictureClause();
-		if (dpcc != null) {
+		if (dpcc != null && dpcc.size() > 0) {
 			CobolParser.PictureStringContext psc = dpcc.get(0).pictureString();
-			if (psc.pictureChars().get(0).getText().charAt(0) == '9') {
+			char firstChar = psc.pictureChars().get(0).getText().charAt(0);
+			if (firstChar == '9' || firstChar == 's' || firstChar == 'S') {
 				this.numeric = true;
 			}
+		} else {
+			this.group = true;
 		}
 		
 		List<CobolParser.DataUsageClauseContext> ducc = this.dde1Ctx.dataUsageClause();
-		if (ducc != null) {
+		if (ducc != null && ducc.size() > 0) {
 			CobolParser.DataUsageTypeContext dutc = ducc.get(0).dataUsageType();
 			if (dutc.BINARY() != null || dutc.COMP() != null || dutc.COMP_4() != null) {
-				this.binary = true;
+				this.type = DDNodeType.COMP;
+			} else if (dutc.COMPUTATIONAL() != null || dutc.COMPUTATIONAL_4() != null) {
+				this.type = DDNodeType.COMP;
 			} else if (dutc.COMP_5() != null) {
-				this.comp5 = true;
+				this.type = DDNodeType.COMP5;
 			} else if (dutc.COMP_3() != null || dutc.PACKED_DECIMAL() != null) {
-				this.packedDecimal = true;
+				this.type = DDNodeType.COMP3;
 			} else if (dutc.DISPLAY() != null) {
 				if (this.numeric) {
-					this.displayNumeric = true;
+					this.type = DDNodeType.ZONED;
 				} else {
-					this.picX = true;
+					this.type = DDNodeType.CHAR;
 				}
 			} else {
-				this.unsupportedType = true;
+				this.type = DDNodeType.UNSUPPORTED;
 			}
 		}
 	}
@@ -243,7 +245,40 @@ class DDNode {
 	}
 
 	public String toString() {
-		return this.level.toString() + " " + this.identifier;
+		StringBuffer sb = new StringBuffer(this.level.toString());
+		sb.append(" " + this.identifier);
+		/*
+		switch(this.type) {
+			case DDNode.COMP:
+				sb.append( " COMP");
+				break;
+			case DDNodeType.COMP5:
+				sb.append( " COMP5");
+				break;
+			case DDNodeType.COMP3:
+				sb.append(" COMP3");
+				break;
+			case DDNodeType.ZONED:
+				sb.append(" ZONED");
+				break;
+			case DDNodeType.CHAR:
+				sb.append(" CHAR");
+				break;
+			case DDNodeType.UNSUPPORTED:
+				sb.append(" UNSUPPORTED");
+				break;
+			default:
+				sb.append(" logic error in " + this.myName);
+		}
+		*/
+		sb.append(" " + this.type);
+		if (this.numeric) {
+			sb.append(" numeric");
+		}
+		if (this.group) {
+			sb.append(" group");
+		}
+		return sb.toString();
 	}
 
 }

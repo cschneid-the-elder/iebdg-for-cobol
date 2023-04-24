@@ -18,7 +18,7 @@ AOPT = -visitor -listener
 	$(JC) $(JCOPT1) ./src/$**.java
 	
 
-all: ./src/CobolLexer.tokens ./src/CobolParser.tokens ./class/Main.class ./class/DDNode.class ./class/DataDescriptionEntryListener.class
+all: ./src/CobolLexer.tokens ./src/CobolParser.tokens ./class/Main.class ./class/DDNodeType.class ./class/DDNode.class ./class/DataDescriptionEntryListener.class
 
 .PHONY: all test jar testrig init test1
 
@@ -61,5 +61,5 @@ init:
 
 ./class/DataDescriptionEntryListener.class: ./class/DDNode.class
 
-
+./class/DDNode.class: ./class/DDNodeType.class
 
