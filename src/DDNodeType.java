@@ -4,5 +4,6 @@
 		, COMP3
 		, COMP5
 		, ZONED
+		, MIXED
 		, UNSUPPORTED
 	}

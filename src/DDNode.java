@@ -17,9 +17,12 @@ class DDNode {
 	private List<String> valuesSet = new ArrayList<>();
 	private Boolean global = false;
 	private Boolean external = false;
+	private Boolean sync = false;
 	private DDNodeType type = null;
 	private Boolean numeric = false;
 	private Boolean group = false;
+	private Integer length = 0;
+	private CobolParser.PictureStringContext psCtx = null;
 	private CobolParser.DataDescriptionEntryContext ddeCtx = null;
 	private CobolParser.DataDescriptionEntryFormat1Context dde1Ctx = null;
 	private CobolParser.DataDescriptionEntryFormat2Context dde2Ctx = null;
@@ -63,7 +66,13 @@ class DDNode {
 			if (dde1Ctx.dataExternalClause() != null && dde1Ctx.dataExternalClause().size() > 0) {
 				this.external = true;
 			}
+			if (dde1Ctx.dataSynchronizedClause() != null && dde1Ctx.dataSynchronizedClause().size() > 0) {
+				this.sync = true;
+			}
 			this.setTypeFromDDE1CTX();
+			if (this.psCtx != null) {
+				this.setLengthFromPictureStringContext();
+			}
 		}
 	}
 
@@ -172,9 +181,27 @@ class DDNode {
 
 		List<CobolParser.DataPictureClauseContext> dpcc = this.dde1Ctx.dataPictureClause();
 		if (dpcc != null && dpcc.size() > 0) {
-			CobolParser.PictureStringContext psc = dpcc.get(0).pictureString();
-			char firstChar = psc.pictureChars().get(0).getText().charAt(0);
-			if (firstChar == '9' || firstChar == 's' || firstChar == 'S') {
+			this.psCtx = dpcc.get(0).pictureString();
+			Boolean num = false;
+			Boolean nonNum = false;
+			for (CobolParser.PictureCharsContext pcCtx: this.psCtx.pictureChars()) {
+				String picString = pcCtx.getText();
+				switch(picString.charAt(0)) {
+					case '9':
+						num = true;
+						break;
+					case 's':
+						num = true;
+						break;
+					case 'S':
+						num = true;
+						break;
+					default:
+						nonNum = true;
+						break;
+				}
+			}
+			if (num && !nonNum) {
 				this.numeric = true;
 			}
 		} else {
@@ -201,6 +228,25 @@ class DDNode {
 			} else {
 				this.type = DDNodeType.UNSUPPORTED;
 			}
+		} else if (!this.group) {
+			if (this.numeric) {
+				this.type = DDNodeType.ZONED;
+			} else {
+				this.type = DDNodeType.CHAR;
+			}
+		}
+	}
+	
+	private void setLengthFromPictureStringContext() {
+	
+	}
+
+	public void setContext(ArrayList<DDNode> nodes) {
+		for (DDNode node: nodes) {
+			if (node == this) {
+				break;
+			}
+			
 		}
 	}
 

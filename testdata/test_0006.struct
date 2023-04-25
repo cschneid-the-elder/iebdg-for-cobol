@@ -1,0 +1,3 @@
+       01  struct.
+           05  a pic x(9).
+           05  b pic 9(9).

@@ -5,3 +5,4 @@ src/CobolLexer.java
 src/CobolParser*.java
 build.log
 iebdg-for-cobol-*.log
+*.out

@@ -1,0 +1,9 @@
+       01  WS-INPT-DATA.
+           05  WS-MIXED-001       PIC 9999/99/99.
+           05                     PIC X.
+           05  WS-MIXED-002       PIC 9999B99B99.
+           05                     PIC X.
+           05  WS-MIXED-003       PIC 9999X99X99.
+           05                     PIC X.
+           05  WS-MIXED-004       PIC 9(4)A(1)9(2)A(1)9(2).
+

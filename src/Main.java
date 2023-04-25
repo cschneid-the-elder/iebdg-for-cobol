@@ -107,6 +107,9 @@ public static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 		LOGGER.finest("ddNodes: " + ddNodes);
 		System.out.println(ddNodes);
 
+		for (DDNode node: ddNodes) {
+			node.setContext(ddNodes);
+		}
 
 	/*
 		LOGGER.info("writing to " + outFileName);
