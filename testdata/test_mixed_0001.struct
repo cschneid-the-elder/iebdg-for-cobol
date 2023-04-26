@@ -6,4 +6,6 @@
            05  WS-MIXED-003       PIC 9999X99X99.
            05                     PIC X.
            05  WS-MIXED-004       PIC 9(4)A(1)9(2)A(1)9(2).
+           05                     PIC X.
+           05  WS-MIXED-005       PIC 9(4)X9(2)A(1)99.
 

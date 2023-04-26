@@ -238,7 +238,18 @@ class DDNode {
 	}
 	
 	private void setLengthFromPictureStringContext() {
-	
+		if (this.length > 0) return;
+		
+		List<CobolParser.PictureCardinalityContext> pcCtxList = this.psCtx.pictureCardinality();
+		
+		if (pcCtxList != null) {
+			for (CobolParser.PictureCardinalityContext pcCtx: pcCtxList) {
+				String aString = pcCtx.getText();
+				System.out.println("aString = |" + aString + "|");
+				String lengthString = aString.substring(1, aString.length() - 1);
+				this.length = this.length + Integer.valueOf(lengthString);
+			}
+		}
 	}
 
 	public void setContext(ArrayList<DDNode> nodes) {
@@ -324,6 +335,7 @@ class DDNode {
 		if (this.group) {
 			sb.append(" group");
 		}
+		sb.append(" " + this.length.toString());
 		return sb.toString();
 	}
 

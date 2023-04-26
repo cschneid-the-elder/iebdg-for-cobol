@@ -129,7 +129,12 @@ dataPictureClause
    ;
 
 pictureString
-   : (pictureChars+ pictureCardinality?)+
+//   : (pictureChars+ pictureCardinality?)+
+   : pictureCharAndCardinality+
+   ;
+
+pictureCharAndCardinality
+   : (pictureChars pictureCardinality?)
    ;
 
 pictureChars
