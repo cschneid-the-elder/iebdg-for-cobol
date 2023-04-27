@@ -184,8 +184,8 @@ class DDNode {
 			this.psCtx = dpcc.get(0).pictureString();
 			Boolean num = false;
 			Boolean nonNum = false;
-			for (CobolParser.PictureCharsContext pcCtx: this.psCtx.pictureChars()) {
-				String picString = pcCtx.getText();
+			for (CobolParser.PictureCharAndCardinalityContext pcacCtx: this.psCtx.pictureCharAndCardinality()) {
+				String picString = pcacCtx.pictureChars().getText();
 				switch(picString.charAt(0)) {
 					case '9':
 						num = true;
@@ -194,6 +194,12 @@ class DDNode {
 						num = true;
 						break;
 					case 'S':
+						num = true;
+						break;
+					case 'v':
+						num = true;
+						break;
+					case 'V':
 						num = true;
 						break;
 					default:
@@ -239,15 +245,28 @@ class DDNode {
 	
 	private void setLengthFromPictureStringContext() {
 		if (this.length > 0) return;
+		LOGGER.finest(this.identifier);
 		
-		List<CobolParser.PictureCardinalityContext> pcCtxList = this.psCtx.pictureCardinality();
+		List<CobolParser.PictureCharAndCardinalityContext> pcacCtxList = 
+			this.psCtx.pictureCharAndCardinality();
 		
-		if (pcCtxList != null) {
-			for (CobolParser.PictureCardinalityContext pcCtx: pcCtxList) {
-				String aString = pcCtx.getText();
-				System.out.println("aString = |" + aString + "|");
-				String lengthString = aString.substring(1, aString.length() - 1);
-				this.length = this.length + Integer.valueOf(lengthString);
+		if (pcacCtxList != null) {
+			for (CobolParser.PictureCharAndCardinalityContext pcacCtx: pcacCtxList) {
+				String picChar = pcacCtx.pictureChars().getText();
+				LOGGER.finest("picChar = |" + picChar + "|");
+				CobolParser.PictureCardinalityContext pcCtx = pcacCtx.pictureCardinality();
+				if (pcCtx == null) {
+					if (picChar.equalsIgnoreCase("S") || picChar.equalsIgnoreCase("V")) {
+						//do nothing
+					} else {
+						this.length++;
+					}
+				} else {
+					String picCardinality = pcCtx.getText();
+					LOGGER.finest("picCardinality = |" + picCardinality + "|");
+					String lengthString = picCardinality.substring(1, picCardinality.length() - 1);
+					this.length = this.length + Integer.valueOf(lengthString);
+				}
 			}
 		}
 	}
@@ -304,30 +323,6 @@ class DDNode {
 	public String toString() {
 		StringBuffer sb = new StringBuffer(this.level.toString());
 		sb.append(" " + this.identifier);
-		/*
-		switch(this.type) {
-			case DDNode.COMP:
-				sb.append( " COMP");
-				break;
-			case DDNodeType.COMP5:
-				sb.append( " COMP5");
-				break;
-			case DDNodeType.COMP3:
-				sb.append(" COMP3");
-				break;
-			case DDNodeType.ZONED:
-				sb.append(" ZONED");
-				break;
-			case DDNodeType.CHAR:
-				sb.append(" CHAR");
-				break;
-			case DDNodeType.UNSUPPORTED:
-				sb.append(" UNSUPPORTED");
-				break;
-			default:
-				sb.append(" logic error in " + this.myName);
-		}
-		*/
 		sb.append(" " + this.type);
 		if (this.numeric) {
 			sb.append(" numeric");
