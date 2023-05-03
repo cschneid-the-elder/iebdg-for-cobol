@@ -70,9 +70,6 @@ class DDNode {
 				this.sync = true;
 			}
 			this.setTypeFromDDE1CTX();
-			if (this.psCtx != null) {
-				this.setLengthFromPictureStringContext();
-			}
 		}
 	}
 
@@ -179,6 +176,11 @@ class DDNode {
 
 	private void setTypeFromDDE1CTX() {
 
+		if (this.type != null) {
+			this.LOGGER.fine(this.myName + " setTypeFromDDE1CTX() type already set to " + this.type);
+			return;
+		}
+		
 		List<CobolParser.DataPictureClauseContext> dpcc = this.dde1Ctx.dataPictureClause();
 		if (dpcc != null && dpcc.size() > 0) {
 			this.psCtx = dpcc.get(0).pictureString();
@@ -186,17 +188,11 @@ class DDNode {
 			Boolean nonNum = false;
 			for (CobolParser.PictureCharAndCardinalityContext pcacCtx: this.psCtx.pictureCharAndCardinality()) {
 				String picString = pcacCtx.pictureChars().getText();
-				switch(picString.charAt(0)) {
+				switch(picString.toUpperCase().charAt(0)) {
 					case '9':
 						num = true;
 						break;
-					case 's':
-						num = true;
-						break;
 					case 'S':
-						num = true;
-						break;
-					case 'v':
 						num = true;
 						break;
 					case 'V':
@@ -221,9 +217,9 @@ class DDNode {
 				this.type = DDNodeType.COMP;
 			} else if (dutc.COMPUTATIONAL() != null || dutc.COMPUTATIONAL_4() != null) {
 				this.type = DDNodeType.COMP;
-			} else if (dutc.COMP_5() != null) {
+			} else if (dutc.COMP_5() != null || dutc.COMPUTATIONAL_5() != null) {
 				this.type = DDNodeType.COMP5;
-			} else if (dutc.COMP_3() != null || dutc.PACKED_DECIMAL() != null) {
+			} else if (dutc.COMP_3() != null  || dutc.COMPUTATIONAL_3() != null || dutc.PACKED_DECIMAL() != null) {
 				this.type = DDNodeType.COMP3;
 			} else if (dutc.DISPLAY() != null) {
 				if (this.numeric) {
@@ -256,10 +252,25 @@ class DDNode {
 				LOGGER.finest("picChar = |" + picChar + "|");
 				CobolParser.PictureCardinalityContext pcCtx = pcacCtx.pictureCardinality();
 				if (pcCtx == null) {
-					if (picChar.equalsIgnoreCase("S") || picChar.equalsIgnoreCase("V")) {
-						//do nothing
-					} else {
-						this.length++;
+					switch(picChar.toUpperCase()) {
+						case "S":
+						case "V":
+							break;
+						case "A":
+						case "B":
+						case "X":
+						case "9":
+						case "0":
+						case "/":
+						case ".":
+						case ",":
+						case "+":
+						case "-":
+							this.length++;
+							break;
+						default:
+							this.type = DDNodeType.UNSUPPORTED;
+							break;
 					}
 				} else {
 					String picCardinality = pcCtx.getText();
@@ -269,14 +280,58 @@ class DDNode {
 				}
 			}
 		}
+		
+		switch(this.type) {
+			case COMP:
+			case COMP5:
+				if (this.length < 5) {
+					this.length = 2;
+				} else if (this.length < 10) {
+					this.length = 4;
+				} else {
+					this.length = 8;
+				}
+				break;
+			case COMP3:
+				Integer i = this.length / 2;
+				if (this.length > 1) {
+					this.length = i + 1;
+				}
+				break;
+			default:
+				break;
+		}
+		LOGGER.finest(this.identifier + " length " + this.length);
 	}
 
-	public void setContext(ArrayList<DDNode> nodes) {
-		for (DDNode node: nodes) {
+	public void setTypeFromContext(ArrayList<DDNode> nodes) {
+		this.LOGGER.fine(this.myName + " setTypeFromContext()");
+		if (this.level == 77 || this.level == 1) {
+			this.LOGGER.fine("return due to this.level = " + this.level);
+			return;
+		}
+
+		Boolean andSoItBegins = false;
+				 
+		for (int i = nodes.size() - 1; i >= 0; i--) {
+			DDNode node = nodes.get(i);
 			if (node == this) {
-				break;
+				andSoItBegins = true;
+				this.LOGGER.finest("found this node in nodes");
 			}
-			
+			this.LOGGER.finest("node = |" + node + "|");
+			if (andSoItBegins) {
+				if (this.level > node.getLevel()) {
+					this.LOGGER.finest(this.level + " > " + node.getLevel());
+					if (node.getType() != null) {
+						this.type = node.getType();
+						break;
+					}
+				}
+			}
+		}
+		if (this.psCtx != null) {
+			this.setLengthFromPictureStringContext();
 		}
 	}
 
@@ -320,6 +375,10 @@ class DDNode {
 		return this.valueInValueClause;
 	}
 
+	public DDNodeType getType() {
+		return this.type;
+	}
+	
 	public String toString() {
 		StringBuffer sb = new StringBuffer(this.level.toString());
 		sb.append(" " + this.identifier);

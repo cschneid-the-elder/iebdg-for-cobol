@@ -104,12 +104,12 @@ public static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
 		walker.walk(listener, tree);
 
+		for (DDNode node: ddNodes) {
+			node.setTypeFromContext(ddNodes);
+		}
+
 		LOGGER.finest("ddNodes: " + ddNodes);
 		System.out.println(ddNodes);
-
-		for (DDNode node: ddNodes) {
-			node.setContext(ddNodes);
-		}
 
 	/*
 		LOGGER.info("writing to " + outFileName);
