@@ -21,7 +21,7 @@ public class DataDescriptionEntryListener extends CobolParserBaseListener {
 		//this.LOGGER.finest("enterEveryRule: " + ctx.getClass().getName() + " @line " + ctx.start.getLine() + ": " + ctx.getText());      //code that executes per rule
 	}
 
-	public void enterDataDescriptionEntry(CobolParser.DataDescriptionEntryContext ctx) {
+	public void enterDataDescriptionEntryFormat1(CobolParser.DataDescriptionEntryFormat1Context ctx) {
 		/**
 		*/
 		DDNode node = new DDNode(ctx, this.LOGGER);

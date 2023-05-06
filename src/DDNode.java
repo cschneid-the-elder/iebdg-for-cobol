@@ -12,6 +12,7 @@ class DDNode {
 	private String redefinesIdentifier = null;
 	private List<String> renamesIdentifier = null;
 	private Integer level = null;
+	private int nb = 0;
 	private String identifier = null;
 	private String valueInValueClause = null;
 	private List<String> valuesSet = new ArrayList<>();
@@ -29,48 +30,25 @@ class DDNode {
 	private CobolParser.DataDescriptionEntryFormat3Context dde3Ctx = null;
 	
 	public DDNode(
-			CobolParser.DataDescriptionEntryContext ctx
+			CobolParser.DataDescriptionEntryFormat1Context ctx
 			, Logger LOGGER
 			) {
-		this.ddeCtx = ctx;
 		this.LOGGER = LOGGER;
-		this.initialize();
-	}
-
-	public void initialize() {
-		if (this.ddeCtx.dataDescriptionEntryFormat1() == null) {
-			if (this.ddeCtx.dataDescriptionEntryFormat2() == null) {
-				if (this.ddeCtx.dataDescriptionEntryFormat3() == null) {
-					this.LOGGER.info(myName + " ! dataDescriptionEntryExecSql ignored");
-				} else {
-					this.dde3Ctx = this.ddeCtx.dataDescriptionEntryFormat3();
-					this.setIdentifierFromDDE3CTX();
-					this.setLevelFromDDE3CTX();
-					this.setValueFromDDE3CTX();
-				}
-			} else {
-				this.dde2Ctx = this.ddeCtx.dataDescriptionEntryFormat2();
-				this.setIdentifierFromDDE2CTX();
-				this.setLevelFromDDE2CTX();
-				this.setRenamesFromDDE2CTX();
-			}
-		} else {
-			this.dde1Ctx = this.ddeCtx.dataDescriptionEntryFormat1();
-			this.setIdentifierFromDDE1CTX();
-			this.setLevelFromDDE1CTX();
-			this.setValueFromDDE1CTX();
-			this.setRedefinesFromDDE1CTX();
-			if (dde1Ctx.dataGlobalClause() != null && dde1Ctx.dataGlobalClause().size() > 0) {
-				this.global = true;
-			}
-			if (dde1Ctx.dataExternalClause() != null && dde1Ctx.dataExternalClause().size() > 0) {
-				this.external = true;
-			}
-			if (dde1Ctx.dataSynchronizedClause() != null && dde1Ctx.dataSynchronizedClause().size() > 0) {
-				this.sync = true;
-			}
-			this.setTypeFromDDE1CTX();
+		this.dde1Ctx = ctx;
+		this.setIdentifierFromDDE1CTX();
+		this.setLevelFromDDE1CTX();
+		this.setValueFromDDE1CTX();
+		this.setRedefinesFromDDE1CTX();
+		if (dde1Ctx.dataGlobalClause() != null && dde1Ctx.dataGlobalClause().size() > 0) {
+			this.global = true;
 		}
+		if (dde1Ctx.dataExternalClause() != null && dde1Ctx.dataExternalClause().size() > 0) {
+			this.external = true;
+		}
+		if (dde1Ctx.dataSynchronizedClause() != null && dde1Ctx.dataSynchronizedClause().size() > 0) {
+			this.sync = true;
+		}
+		this.setTypeFromDDE1CTX();
 	}
 
 	private void setIdentifierFromDDE1CTX() {
@@ -86,10 +64,6 @@ class DDNode {
 
 	}
 
-	private void setIdentifierFromDDE2CTX() {
-		this.identifier = this.dde2Ctx.dataName().cobolWord().getText();
-	}
-
 	private void setIdentifierFromDDE3CTX() {
 		this.identifier = this.dde3Ctx.conditionName().cobolWord().getText();
 	}
@@ -100,10 +74,6 @@ class DDNode {
 		} else {
 			this.level = Integer.parseInt(this.dde1Ctx.INTEGERLITERAL().toString());
 		}
-	}
-
-	private void setLevelFromDDE2CTX() {
-		this.level = Integer.parseInt(this.dde2Ctx.LEVEL_NUMBER_66().toString());
 	}
 
 	private void setLevelFromDDE3CTX() {
@@ -159,18 +129,6 @@ class DDNode {
 			return;
 		} else {
 			this.redefinesIdentifier = this.dde1Ctx.dataRedefinesClause(0).dataName().cobolWord().IDENTIFIER().toString();
-		}
-	}
-
-	private void setRenamesFromDDE2CTX() {
-		this.renamesIdentifier = new ArrayList<>();
-
-		for (CobolParser.QualifiedDataNameContext qdnc: this.dde2Ctx.dataRenamesClause().qualifiedDataName()) {
-			if (qdnc.qualifiedDataNameFormat1().dataName() == null) {
-				this.renamesIdentifier.add(qdnc.qualifiedDataNameFormat1().conditionName().cobolWord().IDENTIFIER().toString());
-			} else {
-				this.renamesIdentifier.add(qdnc.qualifiedDataNameFormat1().dataName().cobolWord().IDENTIFIER().toString());
-			}
 		}
 	}
 
@@ -306,6 +264,14 @@ class DDNode {
 
 	public void setTypeFromContext(ArrayList<DDNode> nodes) {
 		this.LOGGER.fine(this.myName + " setTypeFromContext()");
+		for (int i = 0; i < nodes.size(); i++) {
+			this.nb++;
+			DDNode node = nodes.get(i);
+			if (node == this) {
+				break;
+			}
+		}
+		
 		if (this.level == 77 || this.level == 1) {
 			this.LOGGER.fine("return due to this.level = " + this.level);
 			return;
@@ -333,10 +299,6 @@ class DDNode {
 		if (this.psCtx != null) {
 			this.setLengthFromPictureStringContext();
 		}
-	}
-
-	public Boolean isSpecialLevel() {
-		return(this.level.intValue() == 66 || this.level.intValue() == 77 || this.level.intValue() == 88);
 	}
 
 	public Boolean hasNoParent() {
@@ -393,4 +355,24 @@ class DDNode {
 		return sb.toString();
 	}
 
+	public void writeIEBDG(StringBuffer out) {
+		out.append(String.format("\n  FD NAME=FD%06d", this.nb));
+		out.append(String.format(",\n     LENGTH=%d", this.length.intValue()));
+		if (this.numeric) {
+			out.append(",\n     FORMAT=");
+			switch(this.type) {
+				case COMP:
+				case COMP5:
+					out.append("BI");
+					break;
+				case COMP3:
+					out.append("PD");
+					break;
+				case ZONED:
+					out.append("ZD");
+					break;
+				default:
+			}
+		}
+	}
 }

@@ -104,12 +104,18 @@ public static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
 		walker.walk(listener, tree);
 
+		StringBuffer out = new StringBuffer();
 		for (DDNode node: ddNodes) {
 			node.setTypeFromContext(ddNodes);
+			if (node.getLevel() > 1) {
+				node.writeIEBDG(out);
+			}
 		}
 
 		LOGGER.finest("ddNodes: " + ddNodes);
 		System.out.println(ddNodes);
+
+		System.out.println(out);
 
 	/*
 		LOGGER.info("writing to " + outFileName);
