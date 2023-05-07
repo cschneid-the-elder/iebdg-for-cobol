@@ -19,10 +19,12 @@ class DDNode {
 	private Boolean global = false;
 	private Boolean external = false;
 	private Boolean sync = false;
+	private Boolean signed = false;
 	private DDNodeType type = null;
 	private Boolean numeric = false;
 	private Boolean group = false;
 	private Integer length = 0;
+	private ArrayList<String> iebdgFields = new ArrayList<>();
 	private CobolParser.PictureStringContext psCtx = null;
 	private CobolParser.DataDescriptionEntryContext ddeCtx = null;
 	private CobolParser.DataDescriptionEntryFormat1Context dde1Ctx = null;
@@ -145,13 +147,14 @@ class DDNode {
 			Boolean num = false;
 			Boolean nonNum = false;
 			for (CobolParser.PictureCharAndCardinalityContext pcacCtx: this.psCtx.pictureCharAndCardinality()) {
-				String picString = pcacCtx.pictureChars().getText();
-				switch(picString.toUpperCase().charAt(0)) {
+				String picChars = pcacCtx.pictureChars().getText();
+				switch(picChars.toUpperCase().charAt(0)) {
 					case '9':
 						num = true;
 						break;
 					case 'S':
 						num = true;
+						this.signed = true;
 						break;
 					case 'V':
 						num = true;
@@ -341,6 +344,10 @@ class DDNode {
 		return this.type;
 	}
 	
+	public ArrayList<String> getIEBDGFields() {
+		return this.iebdgFields;
+	}
+	
 	public String toString() {
 		StringBuffer sb = new StringBuffer(this.level.toString());
 		sb.append(" " + this.identifier);
@@ -356,23 +363,178 @@ class DDNode {
 	}
 
 	public void writeIEBDG(StringBuffer out) {
-		out.append(String.format("\n  FD NAME=FD%06d", this.nb));
-		out.append(String.format(",\n     LENGTH=%d", this.length.intValue()));
-		if (this.numeric) {
-			out.append(",\n     FORMAT=");
-			switch(this.type) {
-				case COMP:
-				case COMP5:
-					out.append("BI");
+		switch(this.type) {
+			case COMP:
+			case COMP5:
+				this.writeIEBDG_COMP(out);
+				break;
+			case COMP3:
+				this.writeIEBDG_COMP3(out);
+				break;
+			case ZONED:
+				this.writeIEBDG_ZONED(out);
+				break;
+			case CHAR:
+				this.writeIEBDG_CHAR(out);
+				break;
+			case UNSUPPORTED:
+				break;
+			default:
+				this.LOGGER.severe(this.myName + " writeIEBDG() logic error 1");
+		}
+	}
+
+	private void writeIEBDG_COMP(StringBuffer out) {
+		String fmt = new String("%-71s%-9s\n");
+		String fieldName = String.format("FD%05dA", this.nb);
+		this.iebdgFields.add(fieldName);
+		
+		String s = String.format("  FD NAME=%s,", fieldName);
+		out.append(String.format(fmt, s, "X"));
+		s = String.format("     LENGTH=%d,", this.length.intValue());
+		out.append(String.format(fmt, s, "X"));
+		s = String.format(fmt, "     FORMAT=BI,", "X");
+		out.append(s);
+		s = String.format(fmt, "     SIGN=+,", "X");
+		out.append(s);
+		s = String.format(fmt, "     INDEX=1", " ");
+		out.append(s);
+		
+		if (this.signed) {
+			fieldName = String.format("FD%05dB", this.nb);
+			this.iebdgFields.add(fieldName);
+			s = String.format("  FD NAME=%s,", fieldName);
+			out.append(String.format(fmt, s, "X"));
+			s = String.format("     LENGTH=%d,", this.length.intValue());
+			out.append(String.format(fmt, s, "X"));
+			s = String.format(fmt, "     FORMAT=BI,", "X");
+			out.append(s);
+			s = String.format(fmt, "     SIGN=-,", "X");
+			out.append(s);
+			s = String.format(fmt, "     INDEX=1", " ");
+			out.append(s);
+		}
+	
+	}
+	
+	private void writeIEBDG_COMP3(StringBuffer out) {
+		String fmt = new String("%-71s%-9s\n");
+		String fieldName = String.format("FD%05dA", this.nb);
+		this.iebdgFields.add(fieldName);
+
+		String s = String.format("  FD NAME=%s,", fieldName);
+		out.append(String.format(fmt, s, "X"));
+		s = String.format("     LENGTH=%d,", this.length.intValue());
+		out.append(String.format(fmt, s, "X"));
+		s = String.format(fmt, "     FORMAT=PD,", "X");
+		out.append(s);
+		s = String.format(fmt, "     SIGN=+,", "X");
+		out.append(s);
+		s = String.format(fmt, "     INDEX=1", " ");
+		out.append(s);
+		
+		if (this.signed) {
+			fieldName = String.format("FD%05dB", this.nb);
+			this.iebdgFields.add(fieldName);
+			s = String.format("  FD NAME=%s,", fieldName);
+			out.append(String.format(fmt, s, "X"));
+			s = String.format("     LENGTH=%d,", this.length.intValue());
+			out.append(String.format(fmt, s, "X"));
+			s = String.format(fmt, "     FORMAT=PD,", "X");
+			out.append(s);
+			s = String.format(fmt, "     SIGN=-,", "X");
+			out.append(s);
+			s = String.format(fmt, "     INDEX=1", " ");
+			out.append(s);
+		}
+	
+	}
+	
+	private void writeIEBDG_ZONED(StringBuffer out) {
+		String fmt = new String("%-71s%-9s\n");
+		String fieldName = String.format("FD%05dA", this.nb);
+		this.iebdgFields.add(fieldName);
+
+		String s = String.format("  FD NAME=%s", fieldName);
+		out.append(String.format(fmt, s, "X"));
+		s = String.format("     LENGTH=%d,", this.length.intValue());
+		out.append(String.format(fmt, s, "X"));
+		s = String.format(fmt, "     FORMAT=ZD,", "X");
+		out.append(s);
+		s = String.format(fmt, "     INDEX=1", " ");
+		out.append(s);
+	}
+	
+	private void writeIEBDG_CHAR(StringBuffer out) {
+		String fmt = new String("%-71s%-9s\n");
+		int i = 0;
+		for (CobolParser.PictureCharAndCardinalityContext pcacCtx: this.psCtx.pictureCharAndCardinality()) {
+			i++;
+			String fieldName = String.format("FD%04d%02d", this.nb, i);
+			this.iebdgFields.add(fieldName);
+			String picChars = pcacCtx.pictureChars().getText();
+			CobolParser.PictureCardinalityContext pcc = pcacCtx.pictureCardinality();
+			int card = 1;
+			if (pcc != null) {
+				String picCardinality = pcc.getText();
+				String lengthString = picCardinality.substring(1, picCardinality.length() - 1);
+				card = Integer.valueOf(lengthString);
+			}
+			String s = String.format("  FD NAME=%s,", fieldName);
+			out.append(String.format(fmt, s, "X"));
+			s = String.format("     LENGTH=%d,", card);
+			out.append(String.format(fmt, s, "X"));
+			switch(picChars.toUpperCase().charAt(0)) {
+				case '9':
+					s = String.format(fmt, "     FORMAT=ZD,", "X");
+					out.append(s);
+					s = String.format(fmt, "     INDEX=1", " ");
+					out.append(s);
 					break;
-				case COMP3:
-					out.append("PD");
+				case 'A':
+					s = String.format(fmt, "     FORMAT=AL,", "X");
+					out.append(s);
+					s = String.format(fmt, "     ACTION=SL", " ");
+					out.append(s);
 					break;
-				case ZONED:
-					out.append("ZD");
+				case 'X':
+					s = String.format(fmt, "     FORMAT=AN,", "X");
+					out.append(s);
+					s = String.format(fmt, "     ACTION=SL", " ");
+					out.append(s);
+					break;
+				case 'B':
+					s = String.format(fmt, "     FILL=' '", " ");
+					out.append(s);
+					break;
+				case '/':
+					s = String.format(fmt, "     FILL='/'", " ");
+					out.append(s);
+					break;
+				case '0':
+					s = String.format(fmt, "     FILL='0'", " ");
+					out.append(s);
+					break;
+				case '.':
+					s = String.format(fmt, "     FILL='.'", " ");
+					out.append(s);
+					break;
+				case ',':
+					s = String.format(fmt, "     FILL=','", " ");
+					out.append(s);
+					break;
+				case '+':
+					s = String.format(fmt, "     FILL='+'", " ");
+					out.append(s);
+					break;
+				case '-':
+					s = String.format(fmt, "     FILL='-'", " ");
+					out.append(s);
 					break;
 				default:
+					break;
 			}
 		}
 	}
+	
 }
