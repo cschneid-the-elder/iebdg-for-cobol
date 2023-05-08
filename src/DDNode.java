@@ -389,29 +389,29 @@ class DDNode {
 		String fieldName = String.format("FD%05dA", this.nb);
 		this.iebdgFields.add(fieldName);
 		
-		String s = String.format("  FD NAME=%s,", fieldName);
+		String s = String.format("  FD      NAME=%s,", fieldName);
 		out.append(String.format(fmt, s, "X"));
-		s = String.format("     LENGTH=%d,", this.length.intValue());
+		s = String.format("          LENGTH=%d,", this.length.intValue());
 		out.append(String.format(fmt, s, "X"));
-		s = String.format(fmt, "     FORMAT=BI,", "X");
+		s = String.format(fmt, "          FORMAT=BI,", "X");
 		out.append(s);
-		s = String.format(fmt, "     SIGN=+,", "X");
+		s = String.format(fmt, "          SIGN=+,", "X");
 		out.append(s);
-		s = String.format(fmt, "     INDEX=1", " ");
+		s = String.format(fmt, "          INDEX=1", " ");
 		out.append(s);
 		
 		if (this.signed) {
 			fieldName = String.format("FD%05dB", this.nb);
 			this.iebdgFields.add(fieldName);
-			s = String.format("  FD NAME=%s,", fieldName);
+			s = String.format("  FD      NAME=%s,", fieldName);
 			out.append(String.format(fmt, s, "X"));
-			s = String.format("     LENGTH=%d,", this.length.intValue());
+			s = String.format("          LENGTH=%d,", this.length.intValue());
 			out.append(String.format(fmt, s, "X"));
-			s = String.format(fmt, "     FORMAT=BI,", "X");
+			s = String.format(fmt, "          FORMAT=BI,", "X");
 			out.append(s);
-			s = String.format(fmt, "     SIGN=-,", "X");
+			s = String.format(fmt, "          SIGN=-,", "X");
 			out.append(s);
-			s = String.format(fmt, "     INDEX=1", " ");
+			s = String.format(fmt, "          INDEX=1", " ");
 			out.append(s);
 		}
 	
@@ -422,29 +422,29 @@ class DDNode {
 		String fieldName = String.format("FD%05dA", this.nb);
 		this.iebdgFields.add(fieldName);
 
-		String s = String.format("  FD NAME=%s,", fieldName);
+		String s = String.format("  FD      NAME=%s,", fieldName);
 		out.append(String.format(fmt, s, "X"));
-		s = String.format("     LENGTH=%d,", this.length.intValue());
+		s = String.format("          LENGTH=%d,", this.length.intValue());
 		out.append(String.format(fmt, s, "X"));
-		s = String.format(fmt, "     FORMAT=PD,", "X");
+		s = String.format(fmt, "          FORMAT=PD,", "X");
 		out.append(s);
-		s = String.format(fmt, "     SIGN=+,", "X");
+		s = String.format(fmt, "          SIGN=+,", "X");
 		out.append(s);
-		s = String.format(fmt, "     INDEX=1", " ");
+		s = String.format(fmt, "          INDEX=1", " ");
 		out.append(s);
 		
 		if (this.signed) {
 			fieldName = String.format("FD%05dB", this.nb);
 			this.iebdgFields.add(fieldName);
-			s = String.format("  FD NAME=%s,", fieldName);
+			s = String.format("  FD      NAME=%s,", fieldName);
 			out.append(String.format(fmt, s, "X"));
-			s = String.format("     LENGTH=%d,", this.length.intValue());
+			s = String.format("          LENGTH=%d,", this.length.intValue());
 			out.append(String.format(fmt, s, "X"));
-			s = String.format(fmt, "     FORMAT=PD,", "X");
+			s = String.format(fmt, "          FORMAT=PD,", "X");
 			out.append(s);
-			s = String.format(fmt, "     SIGN=-,", "X");
+			s = String.format(fmt, "          SIGN=-,", "X");
 			out.append(s);
-			s = String.format(fmt, "     INDEX=1", " ");
+			s = String.format(fmt, "          INDEX=1", " ");
 			out.append(s);
 		}
 	
@@ -455,13 +455,13 @@ class DDNode {
 		String fieldName = String.format("FD%05dA", this.nb);
 		this.iebdgFields.add(fieldName);
 
-		String s = String.format("  FD NAME=%s", fieldName);
+		String s = String.format("  FD      NAME=%s", fieldName);
 		out.append(String.format(fmt, s, "X"));
-		s = String.format("     LENGTH=%d,", this.length.intValue());
+		s = String.format("          LENGTH=%d,", this.length.intValue());
 		out.append(String.format(fmt, s, "X"));
-		s = String.format(fmt, "     FORMAT=ZD,", "X");
+		s = String.format(fmt, "          FORMAT=ZD,", "X");
 		out.append(s);
-		s = String.format(fmt, "     INDEX=1", " ");
+		s = String.format(fmt, "          INDEX=1", " ");
 		out.append(s);
 	}
 	
@@ -480,55 +480,55 @@ class DDNode {
 				String lengthString = picCardinality.substring(1, picCardinality.length() - 1);
 				card = Integer.valueOf(lengthString);
 			}
-			String s = String.format("  FD NAME=%s,", fieldName);
+			String s = String.format("  FD      NAME=%s,", fieldName);
 			out.append(String.format(fmt, s, "X"));
-			s = String.format("     LENGTH=%d,", card);
+			s = String.format("          LENGTH=%d,", card);
 			out.append(String.format(fmt, s, "X"));
 			switch(picChars.toUpperCase().charAt(0)) {
 				case '9':
-					s = String.format(fmt, "     FORMAT=ZD,", "X");
+					s = String.format(fmt, "          FORMAT=ZD,", "X");
 					out.append(s);
-					s = String.format(fmt, "     INDEX=1", " ");
+					s = String.format(fmt, "          INDEX=1", " ");
 					out.append(s);
 					break;
 				case 'A':
-					s = String.format(fmt, "     FORMAT=AL,", "X");
+					s = String.format(fmt, "          FORMAT=AL,", "X");
 					out.append(s);
-					s = String.format(fmt, "     ACTION=SL", " ");
+					s = String.format(fmt, "          ACTION=SL", " ");
 					out.append(s);
 					break;
 				case 'X':
-					s = String.format(fmt, "     FORMAT=AN,", "X");
+					s = String.format(fmt, "          FORMAT=AN,", "X");
 					out.append(s);
-					s = String.format(fmt, "     ACTION=SL", " ");
+					s = String.format(fmt, "          ACTION=SL", " ");
 					out.append(s);
 					break;
 				case 'B':
-					s = String.format(fmt, "     FILL=' '", " ");
+					s = String.format(fmt, "          FILL=' '", " ");
 					out.append(s);
 					break;
 				case '/':
-					s = String.format(fmt, "     FILL='/'", " ");
+					s = String.format(fmt, "          FILL='/'", " ");
 					out.append(s);
 					break;
 				case '0':
-					s = String.format(fmt, "     FILL='0'", " ");
+					s = String.format(fmt, "          FILL='0'", " ");
 					out.append(s);
 					break;
 				case '.':
-					s = String.format(fmt, "     FILL='.'", " ");
+					s = String.format(fmt, "          FILL='.'", " ");
 					out.append(s);
 					break;
 				case ',':
-					s = String.format(fmt, "     FILL=','", " ");
+					s = String.format(fmt, "          FILL=','", " ");
 					out.append(s);
 					break;
 				case '+':
-					s = String.format(fmt, "     FILL='+'", " ");
+					s = String.format(fmt, "          FILL='+'", " ");
 					out.append(s);
 					break;
 				case '-':
-					s = String.format(fmt, "     FILL='-'", " ");
+					s = String.format(fmt, "          FILL='-'", " ");
 					out.append(s);
 					break;
 				default:

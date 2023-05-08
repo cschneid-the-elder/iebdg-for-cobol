@@ -104,16 +104,38 @@ public static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
 		walker.walk(listener, tree);
 
-		StringBuffer out = new StringBuffer();
+		String dsdStmt = String.format("%-80s\n", "  DSD     OUTPUT=(OUTPUT01)");
+		StringBuffer out = new StringBuffer(dsdStmt);
 		for (DDNode node: ddNodes) {
 			node.setTypeFromContext(ddNodes);
-			if (node.getLevel() > 1) {
-				node.writeIEBDG(out);
-			}
+			if (node.getLevel() == 1) continue;
+			node.writeIEBDG(out);
 		}
 
 		LOGGER.finest("ddNodes: " + ddNodes);
 		System.out.println(ddNodes);
+
+		for (DDNode thisNode: ddNodes) {
+			if (thisNode.getLevel() == 1) continue;
+			switch(thisNode.getType()) {
+				case COMP:
+				case COMP5:
+				case COMP3:
+					for (thisNode.getIEBDGFields()) {
+						for (DDNode otherNode: ddNodes) {
+							if (otherNode.getLevel() == 1) continue;
+							if (thisNode == otherNode) continue;
+						}
+					}
+					break;
+				case ZONED:
+				case CHAR:
+					break;
+				case UNSUPPORTED:
+					break;
+				default:
+			}
+		}
 
 		System.out.println(out);
 
