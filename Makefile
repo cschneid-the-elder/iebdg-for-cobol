@@ -1,7 +1,7 @@
 
 
 JC = javac
-CP = "./class:./commons-cli-1.4.jar:./antlr-4.11.1-complete.jar"
+CP = "./class:./commons-cli-1.4.jar:./antlr-4.13.1-complete.jar"
 JCOPT = -d ./class -g -Xlint -cp $(CP)
 #JCOPT = -d ./class -g -cp $(CP)
 JCOPT1 = -d ./class -cp $(CP)
@@ -14,7 +14,7 @@ AOPT = -visitor -listener
 
 ./src/%.tokens: ./src/%.g4
 	echo `date` $< >>build.log
-	java -jar ./antlr-4.11.1-complete.jar $(AOPT) $<
+	java -jar ./antlr-4.13.1-complete.jar $(AOPT) $<
 	$(JC) $(JCOPT1) ./src/$**.java
 	
 
@@ -50,7 +50,7 @@ jar:
 
 testrig:
 	echo `date` $@ $(n) >> build.log
-	java -cp ./class:.:./antlr-4.11.1-complete.jar org.antlr.v4.gui.TestRig Cobol startRule -gui -tokens < ./testdata/test_$(n).struct
+	java -cp ./class:.:./antlr-4.13.1-complete.jar org.antlr.v4.gui.TestRig Cobol startRule -gui -tokens < ./testdata/test_$(n).struct
 
 init:
 	mkdir class

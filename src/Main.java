@@ -23,14 +23,15 @@ import static org.antlr.v4.runtime.CharStreams.fromFileName;
 
 public class Main {
 
-public static final Logger LOGGER = Logger.getLogger(Main.class.getName());
+	public static final Logger LOGGER = Logger.getLogger(Main.class.getName());
+
+	private static ArrayList<DDNode> ddNodes = new ArrayList<>();
 
 	public static void main(String[] args) throws Exception {
 
 		Handler fileHandler  = null;
 		String inFileName = args[0];
 		String outFileName = args[1];
-		ArrayList<DDNode> ddNodes = new ArrayList<>();
 	
 		switch (args.length) {
 			case 0:
@@ -115,13 +116,14 @@ public static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 		LOGGER.finest("ddNodes: " + ddNodes);
 		System.out.println(ddNodes);
 
+		/*
 		for (DDNode thisNode: ddNodes) {
 			if (thisNode.getLevel() == 1) continue;
 			switch(thisNode.getType()) {
 				case COMP:
 				case COMP5:
 				case COMP3:
-					for (thisNode.getIEBDGFields()) {
+					for (String s: thisNode.getIEBDGFields()) {
 						for (DDNode otherNode: ddNodes) {
 							if (otherNode.getLevel() == 1) continue;
 							if (thisNode == otherNode) continue;
@@ -136,7 +138,9 @@ public static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 				default:
 			}
 		}
+		*/
 
+		makeCreateCards(out, 0, false);
 		System.out.println(out);
 
 	/*
@@ -154,5 +158,41 @@ public static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 		LOGGER.info("Processing complete");
 	}
 
+	private static void makeCreateCards(StringBuffer out, int i, Boolean start) {
+		LOGGER.fine("makeCreateCards(..., " + i + ", " + start);
+		ArrayList<String> iebdgFields = ddNodes.get(i).getIEBDGFields();
+		if (ddNodes.get(i).getLevel() == 1) {
+			makeCreateCards(out, ++i, true);
+		} else if (start) {
+			String fmt1 = new String("%-71s%-9s\n");
+			String fmt2 = new String("%15s%-56s%-9s\n");
+			for (String iebdgField: iebdgFields) {
+				out.append(String.format(fmt1, "  CREATE QUANTITY=100,", "X"));
+				out.append(String.format(fmt2, "NAME=(", iebdgField, "X"));
+				makeCreateCards(out, ++i, false);
+			}
+		} else if (i == ddNodes.size() - 1) {
+			String fmt3 = new String("%15s%-56s%-9s\n");
+			int nbFields = 0;
+			for (String iebdgField: iebdgFields) {
+				nbFields++;
+				if (nbFields == iebdgFields.size()) {
+					String s = iebdgField + ")"; //last one
+					out.append(String.format(fmt3, ",", s, " "));
+				} else {
+					out.append(String.format(fmt3, ",", iebdgField, "X"));
+				}
+			}
+			out.append("  END\n"); //done
+		} else {
+			String fmt4 = new String("%15s%-56s%-9s\n");
+			for (String iebdgField: iebdgFields) {
+				out.append(String.format(fmt4, ",", ddNodes.get(i).getIEBDGFields().get(0), "X"));
+				if (i < ddNodes.size() - 1) {
+					makeCreateCards(out, ++i, false);
+				}
+			}
+		}
+	}
 }
 
